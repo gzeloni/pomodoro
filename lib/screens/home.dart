@@ -39,6 +39,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   AppLifecycleState? _notificacao;
 
+  void detectLifecycleState() {
+    if (_notificacao == AppLifecycleState.detached) {
+      _controller.pause();
+      _controller.reset();
+    }
+  }
+
   startStop() {
     if (iniciaOuPara) {
       startCountDown();
