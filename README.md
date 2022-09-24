@@ -1,21 +1,30 @@
-<<<<<<< HEAD
-# pomodoro_app
+## Pomodoro
 
-A new Flutter project.
+Este é um aplicativo de produtividade ainda em desenvolvimento.
 
-## Getting Started
+### O aplicativo possui:
+ - Timer de 25 minutos.
+ - Timer de uma hora (desafio diário, só funciona uma vez no dia).
 
-This project is a starting point for a Flutter application.
+### TO DO
+ - Lista de tarefas.
+ - Configurações de temas do aplicativo.
+ - Armazenamento de dados de uso online para comodidade do usuário.
 
-A few resources to get you started if this is your first Flutter project:
+### Tecnologias usadas
+ - Desenvolvido com o framework Flutter. Todas as telas e funcionalidades foram escritas na linguagem Dart.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Dependências
+ - Circular Countdown Timer
+ - Android Power Manager
+ - Permission Handler
+ - Lottie
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-=======
-# pomodoro
-A Pomodoro App for Linux, Web and Android platform
->>>>>>> ad62ff99b7cfe3a61fb14a677bfc71efbf3bae79
+## Como usar
+
+Instale o Flutter SDK e rode via terminal o comando `flutter doctor`. Todas as dependências solicitadas no output do comando precisam ser cumpridas.
+O Android SDK precisa ser em uma versão superior a 33.
+Após descompactar o arquivo .zip, vá até a pasta (via shell/bash ou prompt do Windows) e rode o comando `flutter run` na pasta mãe do projeto.
+Selecione onde executar **NÃO OTIMIZADO PARA WEB** e aguarde que a depuração seja executada.
+Para efetuar uma build do projeto, use o comando `flutter build <tipo de build>`. Exemplo `flutter build apk`.
+Demais modelos de build e comandos, vide a [Documentação](https://docs.flutter.dev/).
