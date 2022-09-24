@@ -19,6 +19,7 @@ Este é um aplicativo de produtividade ainda em desenvolvimento.
  - Android Power Manager
  - Permission Handler
  - Lottie
+ - Firebase
 
 ## Como usar
 
