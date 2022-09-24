@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:pomodoro_app/screens/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -82,13 +83,25 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text("Pomodoro"),
-        centerTitle: true,
-        shadowColor: Colors.transparent,
-      ),
       body: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                alignment: Alignment.bottomRight,
+                padding: const EdgeInsets.only(top: 40),
+                child: TextButton(
+                  onPressed: () => Settings(),
+                  child: Icon(
+                    Icons.settings,
+                    size: 36,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          ),
           Center(
             child: CircularCountDownTimer(
               duration: _duracaoTimer,
@@ -98,15 +111,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               height: MediaQuery.of(context).size.height / 2,
               ringColor: Colors.grey[300]!,
               ringGradient: null,
-              fillColor: Color.fromARGB(255, 224, 9, 38),
+              fillColor: Color.fromARGB(255, 4, 211, 238),
               fillGradient: null,
               backgroundColor: Colors.white,
-              backgroundGradient: null,
               strokeWidth: 22.5,
               strokeCap: StrokeCap.round,
               textStyle: const TextStyle(
                 fontSize: 33.0,
-                color: Color.fromARGB(255, 224, 9, 38),
+                color: Color.fromARGB(255, 4, 211, 238),
                 fontWeight: FontWeight.bold,
               ),
               textFormat: CountdownTextFormat.MM_SS,
@@ -140,15 +152,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(38),
-                      color: Color.fromARGB(255, 224, 9, 38),
+                      color: Color.fromARGB(255, 4, 211, 238),
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                        )),
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                        ),
                       ),
                       child: Icon(
                         _botaoRelogio,
@@ -168,15 +181,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(38),
-                      color: Color.fromARGB(255, 224, 9, 38),
+                      color: Color.fromARGB(255, 4, 211, 238),
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                        )),
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                        ),
                       ),
                       child: Icon(
                         Icons.replay,
