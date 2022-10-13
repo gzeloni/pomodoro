@@ -1,17 +1,16 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
-import 'package:pomodoro_app/screens/settings.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Pomodoro extends StatefulWidget {
+  const Pomodoro({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Pomodoro> createState() => _PomodoroState();
 }
 
-class _HomeState extends State<Home> with WidgetsBindingObserver {
+class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
   late int _duracaoTimer = 1500;
   late int _voltas = 0;
   final CountDownController _controller = CountDownController();
@@ -83,24 +82,25 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "Pomodoro",
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                alignment: Alignment.bottomRight,
-                padding: const EdgeInsets.only(top: 40),
-                child: TextButton(
-                  onPressed: () => Settings(),
-                  child: Icon(
-                    Icons.settings,
-                    size: 36,
-                    color: Colors.black,
-                  ),
-                ),
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(top: 20, left: 10),
+            child: Text(
+              'Bem vindo, Gustavo',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w500,
               ),
-            ],
+            ),
           ),
           Center(
             child: CircularCountDownTimer(

@@ -1,0 +1,39 @@
+Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    padding:
+                        const EdgeInsets.only(top: 40, left: 10, right: 10),
+                    child: Image.asset(
+                      'assets/apple.png',
+                      height: 65,
+                      width: 65,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.only(top: 40, right: 10),
+                    child: Text(
+                      'Pomodoro',
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                alignment: Alignment.bottomRight,
+                padding: const EdgeInsets.only(top: 40, right: 10),
+                child: Image.asset(
+                  'assets/notification.png',
+                  height: 65,
+                  width: 65,
+                ),
+              ),
+            ],
+          ),

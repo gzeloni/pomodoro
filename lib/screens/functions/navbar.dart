@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
-import 'package:pomodoro_app/screens/home.dart';
-import 'package:pomodoro_app/screens/challenge.dart';
-import 'package:pomodoro_app/screens/settings.dart';
+import 'package:pomodoro_app/screens/loginScreens/loginPage.dart';
+import 'package:pomodoro_app/screens/pomodoro/pomodoro.dart';
+import 'package:pomodoro_app/screens/settings/settings.dart';
 
 class Screens extends StatefulWidget {
   const Screens({super.key});
@@ -15,8 +15,10 @@ class _ScreensState extends State<Screens> {
   int indexOf = 0; // posíção dos ítens na barra de navegação.
 
   final telas = const [
-    Home(),
-    Challenge(),
+    Pomodoro(),
+    Pomodoro(),
+    Pomodoro(),
+    LoginScreen(),
     Settings(),
   ]; /* Botões da barra de navegação.
   Alterar essa ordem altera a posíção dos itens na barra, é um valor indexado.*/
@@ -29,7 +31,7 @@ class _ScreensState extends State<Screens> {
         children: telas,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        iconSize: 35,
+        iconSize: 32,
         selectedFontSize: 15,
         unselectedFontSize: 14,
         type: BottomNavigationBarType.fixed,
@@ -43,12 +45,20 @@ class _ScreensState extends State<Screens> {
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.dangerous),
-            label: 'Desafio Diário',
+            icon: Icon(Icons.home),
+            label: 'Tarefas',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings_suggest),
-            label: 'Configurações',
+            icon: Icon(Icons.add),
+            label: 'Iniciar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.stairs),
+            label: 'Estatísticas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Perfil',
           ),
         ],
       ),

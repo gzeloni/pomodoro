@@ -41,9 +41,6 @@ dependencies:
   permission_handler: ^10.0.0
   lottie: ^1.4.3
   shared_preferences: ^2.0.15
-  firebase_auth: ^3.10.0
-  firebase_core: ^1.23.0
-  cloud_firestore: ^3.4.9
 
 dev_dependencies:
   flutter_test:
