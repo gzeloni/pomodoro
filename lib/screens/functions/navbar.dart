@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:pomodoro_app/screens/loginScreens/loginPage.dart';
-import 'package:pomodoro_app/screens/pomodoro/pomodoro.dart';
+import 'package:pomodoro_app/screens/homeScreen/pomodoro.dart';
 import 'package:pomodoro_app/screens/settings/settings.dart';
+import 'package:pomodoro_app/screens/todos/todos.dart';
 
 class Screens extends StatefulWidget {
   const Screens({super.key});
@@ -16,7 +17,7 @@ class _ScreensState extends State<Screens> {
 
   final telas = const [
     Pomodoro(),
-    Pomodoro(),
+    Todos(),
     Pomodoro(),
     LoginScreen(),
     Settings(),

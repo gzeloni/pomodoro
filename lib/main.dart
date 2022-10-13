@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-import 'package:pomodoro_app/screens/pomodoro/pomodoro.dart';
 import 'package:flutter/material.dart';
 import 'package:pomodoro_app/screens/functions/navbar.dart';
 

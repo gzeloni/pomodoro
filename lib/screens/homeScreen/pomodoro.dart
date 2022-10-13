@@ -1,7 +1,5 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Pomodoro extends StatefulWidget {
   const Pomodoro({super.key});
@@ -16,18 +14,10 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
   final CountDownController _controller = CountDownController();
   bool iniciaOuPara = true;
   IconData _botaoRelogio = Icons.play_arrow;
-  Future<void> readData() async {
-    final data = await SharedPreferences.getInstance();
-    setState(() {
-      _voltas = (data.getInt('counter') ?? 0);
-      _duracaoTimer = (data.getInt('duracaoTimer') ?? 0); // ...
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    readData();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -70,14 +60,6 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
     });
   }
 
-  Future<void> _voltasCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _voltas = (prefs.getInt('voltas') ?? 0) + 1;
-      prefs.setInt('voltas', _voltas);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,14 +93,14 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
               height: MediaQuery.of(context).size.height / 2,
               ringColor: Colors.grey[300]!,
               ringGradient: null,
-              fillColor: Color.fromARGB(255, 4, 211, 238),
+              fillColor: Color.fromARGB(255, 238, 4, 4),
               fillGradient: null,
               backgroundColor: Colors.white,
               strokeWidth: 22.5,
               strokeCap: StrokeCap.round,
               textStyle: const TextStyle(
                 fontSize: 33.0,
-                color: Color.fromARGB(255, 4, 211, 238),
+                color: Color.fromARGB(255, 238, 4, 4),
                 fontWeight: FontWeight.bold,
               ),
               textFormat: CountdownTextFormat.MM_SS,
@@ -127,7 +109,6 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
               isTimerTextShown: true,
               autoStart: false,
               onComplete: () {
-                _voltasCount();
                 iniciaOuPara = true;
               },
             ),
@@ -152,7 +133,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
                     height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(38),
-                      color: Color.fromARGB(255, 4, 211, 238),
+                      color: Color.fromARGB(255, 238, 4, 4),
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(
@@ -181,7 +162,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
                     height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(38),
-                      color: Color.fromARGB(255, 4, 211, 238),
+                      color: Color.fromARGB(255, 238, 4, 4),
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(

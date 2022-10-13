@@ -41,6 +41,7 @@ dependencies:
   permission_handler: ^10.0.0
   lottie: ^1.4.3
   shared_preferences: ^2.0.15
+  intl:
 
 dev_dependencies:
   flutter_test:
