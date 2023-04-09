@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pomodoro/src/models/buttons.dart';
 import 'package:pomodoro/src/models/menu_button.dart';
+// import 'package:pomodoro/src/models/settings_buttons.dart';
 import 'package:pomodoro/src/models/switch_colors.dart';
 
 class Pomodoro extends StatefulWidget {
@@ -15,9 +16,8 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
   bool isStarted = false;
   Timer? countdownTimer;
   Duration myDuration = const Duration(minutes: 25);
-  String mensagem = 'Bem-vinda de volta gatinha :)';
   List<String> modes = ['Foco', 'Pausa curta', 'Pausa Longa'];
-  int indexOf = 1;
+  int indexOf = 0;
   IconData modeIcon = Icons.spa_outlined;
 
   @override
@@ -84,9 +84,9 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
       indexOf == 0
           ? myDuration = const Duration(minutes: 25)
           : indexOf == 1
-              ? myDuration = const Duration(minutes: 15)
+              ? myDuration = const Duration(minutes: 5)
               : indexOf == 2
-                  ? myDuration = const Duration(minutes: 50)
+                  ? myDuration = const Duration(minutes: 15)
                   : myDuration = const Duration(minutes: 25);
     });
   }
@@ -95,7 +95,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
     const reduceSecondsBy = 1;
     setState(() {
       final seconds = myDuration.inSeconds - reduceSecondsBy;
-      if (seconds < 0) {
+      if (seconds <= 0) {
         countdownTimer!.cancel();
         stopTimer();
       } else {
@@ -167,7 +167,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
             ),
             CustomButtons(
               firstButtonPressed: () {
-                _exibirDialogo();
+                _showDialog();
               },
               secondButtonPressed: () {
                 setState(() {
@@ -204,11 +204,11 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
     );
   }
 
-  void _exibirDialogo() {
+  void _showDialog() {
     // set up the button
     Widget okButton = TextButton(
       child: Text(
-        "OK",
+        "Sair",
         style: TextStyle(color: colorData900(indexOf)),
       ),
       onPressed: () {
@@ -229,10 +229,19 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
         width: 150,
         child: Column(children: [
           CustomIconButton(
-              icon: Icons.leaderboard_outlined,
-              indexOf: indexOf,
-              onPressed: () {},
-              text: 'Estatísticas'),
+            icon: Icons.leaderboard_outlined,
+            indexOf: indexOf,
+            onPressed: () {},
+            text: 'Estatísticas',
+          ),
+          CustomIconButton(
+            icon: Icons.settings_outlined,
+            indexOf: indexOf,
+            onPressed: () {
+              _settings();
+            },
+            text: 'Configurações',
+          ),
         ]),
       ),
       actions: [
@@ -248,6 +257,88 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
       },
     );
   }
+
+  void _settings() {
+    String strDigits(int n) => n.toString().padLeft(2, '0');
+    String minutes = strDigits(myDuration.inMinutes.remainder(60));
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancelar",
+        style: TextStyle(color: colorData900(indexOf)),
+      ),
+      onPressed: () {
+        for (int i = 0; i < 2; i++) {
+          Navigator.of(context).pop();
+        }
+      },
+    );
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text(
+        "Confirmar",
+        style: TextStyle(color: colorData900(indexOf)),
+      ),
+      onPressed: () {
+        for (int i = 0; i < 2; i++) {
+          Navigator.of(context).pop();
+        }
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: colorData50(indexOf),
+      title: Text(
+        "Configurações",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: colorData900(indexOf)),
+      ),
+      content: SizedBox(
+        height: 150,
+        width: 150,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(
+            'Aguarde a próxima atualização.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: colorData900(indexOf)),
+          )
+          //   icon: Icons.leaderboard_outlined,
+          //   indexOf: indexOf,
+          //   onPressed: () {},
+          //   text: 'Teste',
+          // ),
+          // CustomIconButton(
+          //   icon: Icons.settings_outlined,
+          //   indexOf: indexOf,
+          //   onPressed: () {},
+          //   text: 'Teste 2',
+          // ),
+          // SettingsButtons(
+          //   indexOf: indexOf,
+          //   upPressed: () {
+          //     setState(() {
+          //       myDuration.inMinutes + 1;
+          //       minutes;
+          //     });
+          //   },
+          //   downPressed: () {},
+          //   text: 'Teste 3',
+          //   duration: minutes,
+          // )
+        ]),
+      ),
+      actions: [cancelButton, okButton],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
 
 // 986 - 78 até 372 - 618
+

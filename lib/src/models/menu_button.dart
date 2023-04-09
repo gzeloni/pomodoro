@@ -36,7 +36,8 @@ class _CustomIconButtonState extends State<CustomIconButton> {
             style: TextStyle(
               color: colorData900(widget.indexOf),
             ),
-          )
+          ),
+          const SizedBox(height: 40),
         ],
       ),
     );
