@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pomodoro/src/models/buttons.dart';
+import 'package:pomodoro/src/models/menu_button.dart';
 import 'package:pomodoro/src/models/switch_colors.dart';
 
 class Pomodoro extends StatefulWidget {
@@ -226,7 +227,13 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
       content: SizedBox(
         height: 150,
         width: 150,
-        child: Column(children: [Row()]),
+        child: Column(children: [
+          CustomIconButton(
+              icon: Icons.leaderboard_outlined,
+              indexOf: indexOf,
+              onPressed: () {},
+              text: 'Estatísticas'),
+        ]),
       ),
       actions: [
         okButton,
