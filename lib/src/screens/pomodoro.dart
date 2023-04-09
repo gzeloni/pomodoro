@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:pomodoro/main.dart';
 import 'package:pomodoro/src/models/buttons.dart';
 import 'package:pomodoro/src/models/menu_button.dart';
 // import 'package:pomodoro/src/models/settings_buttons.dart';
@@ -12,104 +16,115 @@ class Pomodoro extends StatefulWidget {
   State<Pomodoro> createState() => _PomodoroState();
 }
 
-class _PomodoroState extends State<Pomodoro> //with WidgetsBindingObserver
-{
+class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
+  // ignore: unused_field
+  bool _notificationsEnabled = false;
   bool isStarted = false;
   Timer? countdownTimer;
   Duration myDuration = const Duration(minutes: 25);
   List<String> modes = ['Foco', 'Pausa curta', 'Pausa Longa'];
   int indexOf = 0;
+  int cycle = 0;
   IconData modeIcon = Icons.spa_outlined;
+  String minutes = '';
+  String seconds = '';
 
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addObserver(this);
+    _isAndroidPermissionGranted();
+    _requestPermissions();
+    _configureDidReceiveLocalNotificationSubject();
+    _configureSelectNotificationSubject();
+  }
+
+  Future<void> _isAndroidPermissionGranted() async {
+    if (Platform.isAndroid) {
+      final bool granted = await flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>()
+              ?.areNotificationsEnabled() ??
+          false;
+
+      setState(() {
+        _notificationsEnabled = granted;
+      });
+    }
+  }
+
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS || Platform.isMacOS) {
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      final bool? granted = await androidImplementation?.requestPermission();
+      setState(() {
+        _notificationsEnabled = granted ?? false;
+      });
+    }
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title!)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body!)
+              : null,
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  void _configureSelectNotificationSubject() {
+    selectNotificationStream.stream.listen((String? payload) async {});
   }
 
   @override
   void dispose() {
-    // WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
+    didReceiveLocalNotificationStream.close();
+    selectNotificationStream.close();
     super.dispose();
-  }
-
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   super.didChangeAppLifecycleState(state);
-  //   switch (state) {
-  //     case AppLifecycleState.inactive:
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       break;
-  //     case AppLifecycleState.resumed:
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           backgroundColor: const Color.fromARGB(255, 126, 72, 181),
-  //           duration: const Duration(seconds: 5),
-  //           content: Text(
-  //             "O timer reseta se sair do app.",
-  //             textAlign: TextAlign.center,
-  //             style: const TextStyle(color: Colors.white, fontSize: 18),
-  //           ),
-  //         ),
-  //       );
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       if (isStarted == true) {
-  //         resetTimer();
-  //       }
-  //       break;
-  //   }
-  // }
-
-  void startTimer() {
-    countdownTimer =
-        Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
-  }
-
-  void stopTimer() {
-    setState(() => countdownTimer!.cancel());
-  }
-
-  void resetTimer() {
-    stopTimer();
-    setState(() => myDuration = const Duration(minutes: 25));
-  }
-
-  void switchTimer() {
-    if (isStarted == true) {
-      stopTimer();
-      isStarted = !isStarted;
-    }
-    setState(() {
-      indexOf == 0
-          ? myDuration = const Duration(minutes: 25)
-          : indexOf == 1
-              ? myDuration = const Duration(minutes: 5)
-              : indexOf == 2
-                  ? myDuration = const Duration(minutes: 15)
-                  : myDuration = const Duration(minutes: 25);
-    });
-  }
-
-  void setCountDown() {
-    const reduceSecondsBy = 1;
-    setState(() {
-      final seconds = myDuration.inSeconds - reduceSecondsBy;
-      if (seconds <= 0) {
-        countdownTimer!.cancel();
-        stopTimer();
-      } else {
-        myDuration = Duration(seconds: seconds);
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     String strDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = strDigits(myDuration.inMinutes.remainder(60));
-    final seconds = strDigits(myDuration.inSeconds.remainder(60));
+    minutes = strDigits(myDuration.inMinutes.remainder(60));
+    seconds = strDigits(myDuration.inSeconds.remainder(60));
     return Scaffold(
       backgroundColor: colorData50(indexOf),
       body: SafeArea(
@@ -174,7 +189,7 @@ class _PomodoroState extends State<Pomodoro> //with WidgetsBindingObserver
                 setState(() {
                   if (isStarted == false) {
                     isStarted = !isStarted;
-                    startTimer();
+                    pomodoroCycle();
                   } else {
                     isStarted = !isStarted;
                     resetTimer();
@@ -297,36 +312,16 @@ class _PomodoroState extends State<Pomodoro> //with WidgetsBindingObserver
       content: SizedBox(
         height: 150,
         width: 150,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(
-            'Aguarde a próxima atualização.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: colorData900(indexOf)),
-          )
-          //   icon: Icons.leaderboard_outlined,
-          //   indexOf: indexOf,
-          //   onPressed: () {},
-          //   text: 'Teste',
-          // ),
-          // CustomIconButton(
-          //   icon: Icons.settings_outlined,
-          //   indexOf: indexOf,
-          //   onPressed: () {},
-          //   text: 'Teste 2',
-          // ),
-          // SettingsButtons(
-          //   indexOf: indexOf,
-          //   upPressed: () {
-          //     setState(() {
-          //       myDuration.inMinutes + 1;
-          //       minutes;
-          //     });
-          //   },
-          //   downPressed: () {},
-          //   text: 'Teste 3',
-          //   duration: minutes,
-          // )
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Aguarde a próxima atualização.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: colorData900(indexOf)),
+            ),
+          ],
+        ),
       ),
       actions: [cancelButton, okButton],
     );
@@ -376,36 +371,16 @@ class _PomodoroState extends State<Pomodoro> //with WidgetsBindingObserver
       content: SizedBox(
         height: 150,
         width: 150,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(
-            'Aguarde a próxima atualização.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: colorData900(indexOf)),
-          )
-          //   icon: Icons.leaderboard_outlined,
-          //   indexOf: indexOf,
-          //   onPressed: () {},
-          //   text: 'Teste',
-          // ),
-          // CustomIconButton(
-          //   icon: Icons.settings_outlined,
-          //   indexOf: indexOf,
-          //   onPressed: () {},
-          //   text: 'Teste 2',
-          // ),
-          // SettingsButtons(
-          //   indexOf: indexOf,
-          //   upPressed: () {
-          //     setState(() {
-          //       myDuration.inMinutes + 1;
-          //       minutes;
-          //     });
-          //   },
-          //   downPressed: () {},
-          //   text: 'Teste 3',
-          //   duration: minutes,
-          // )
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Aguarde a próxima atualização.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: colorData900(indexOf)),
+            ),
+          ],
+        ),
       ),
       actions: [cancelButton, okButton],
     );
@@ -416,6 +391,154 @@ class _PomodoroState extends State<Pomodoro> //with WidgetsBindingObserver
       builder: (BuildContext context) {
         return alert;
       },
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive:
+        _showNotificationCustomSound();
+        break;
+      case AppLifecycleState.paused:
+        _showNotificationCustomSound();
+        break;
+      case AppLifecycleState.resumed:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Color.fromARGB(255, 126, 72, 181),
+            duration: Duration(seconds: 5),
+            content: Text(
+              "Bem-vindo de volta!",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+        );
+        break;
+      case AppLifecycleState.detached:
+        if (isStarted == true) {
+          resetTimer();
+        }
+        break;
+    }
+  }
+
+  void startTimer() {
+    countdownTimer =
+        Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
+  }
+
+  void stopTimer() {
+    setState(() => countdownTimer!.cancel());
+  }
+
+  void resetTimer() {
+    stopTimer();
+    setState(() => myDuration = const Duration(minutes: 25));
+  }
+
+  void switchTimer() {
+    if (isStarted == true) {
+      stopTimer();
+      isStarted = !isStarted;
+    }
+    setState(() {
+      indexOf == 0
+          ? myDuration = const Duration(minutes: 25)
+          : indexOf == 1
+              ? myDuration = const Duration(minutes: 5)
+              : indexOf == 2
+                  ? myDuration = const Duration(minutes: 15)
+                  : myDuration = const Duration(minutes: 25);
+    });
+  }
+
+  void setCountDown() {
+    const reduceSecondsBy = 1;
+    setState(() {
+      final seconds = myDuration.inSeconds - reduceSecondsBy;
+      if (seconds <= 0) {
+        countdownTimer!.cancel();
+        stopTimer();
+        cycle++;
+        pomodoroCycle();
+      } else {
+        myDuration = Duration(seconds: seconds);
+      }
+    });
+  }
+
+  void pomodoroCycle() {
+    if (cycle == 0) {
+      startTimer();
+    } else if (cycle == 1 || cycle == 3 || cycle == 5 || cycle == 7) {
+      setState(() {
+        indexOf = 1;
+        switchTimer();
+        if (isStarted == false) {
+          isStarted = !isStarted;
+          startTimer();
+          _showNotificationCustomSound();
+        }
+      });
+    } else if (cycle == 2 || cycle == 4 || cycle == 6) {
+      setState(() {
+        indexOf = 0;
+        switchTimer();
+        if (isStarted == false) {
+          isStarted = !isStarted;
+          startTimer();
+          _showNotificationCustomSound();
+        }
+      });
+    } else if (cycle == 8) {
+      setState(() {
+        indexOf = 2;
+        switchTimer();
+        if (isStarted == false) {
+          isStarted = !isStarted;
+          startTimer();
+          _showNotificationCustomSound();
+        }
+      });
+    } else if (cycle == 9) {
+      setState(() {
+        indexOf = 0;
+        isStarted = false;
+        switchTimer();
+        resetTimer();
+        _showNotificationCustomSound();
+      });
+    }
+  }
+
+  Future<void> _showNotificationCustomSound() async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      'Pomodoro',
+      'pomodoro app',
+      channelDescription: 'timer',
+      sound: RawResourceAndroidNotificationSound('slow_spring_board'),
+    );
+    const DarwinNotificationDetails darwinNotificationDetails =
+        DarwinNotificationDetails(sound: 'slow_spring_board.aiff');
+    final LinuxNotificationDetails linuxPlatformChannelSpecifics =
+        LinuxNotificationDetails(
+      sound: AssetsLinuxSound('sound/slow_spring_board.mp3'),
+    );
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: darwinNotificationDetails,
+      macOS: darwinNotificationDetails,
+      linux: linuxPlatformChannelSpecifics,
+    );
+    await flutterLocalNotificationsPlugin.show(
+      id++,
+      'Pomodoro está em segundo plano',
+      '$minutes:$seconds',
+      notificationDetails,
     );
   }
 }
