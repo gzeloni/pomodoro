@@ -12,7 +12,8 @@ class Pomodoro extends StatefulWidget {
   State<Pomodoro> createState() => _PomodoroState();
 }
 
-class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
+class _PomodoroState extends State<Pomodoro> //with WidgetsBindingObserver
+{
   bool isStarted = false;
   Timer? countdownTimer;
   Duration myDuration = const Duration(minutes: 25);
@@ -46,7 +47,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
   //           backgroundColor: const Color.fromARGB(255, 126, 72, 181),
   //           duration: const Duration(seconds: 5),
   //           content: Text(
-  //             mensagem,
+  //             "O timer reseta se sair do app.",
   //             textAlign: TextAlign.center,
   //             style: const TextStyle(color: Colors.white, fontSize: 18),
   //           ),
@@ -231,7 +232,9 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
           CustomIconButton(
             icon: Icons.leaderboard_outlined,
             indexOf: indexOf,
-            onPressed: () {},
+            onPressed: () {
+              _analytics();
+            },
             text: 'Estatísticas',
           ),
           CustomIconButton(
@@ -259,8 +262,6 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
   }
 
   void _settings() {
-    String strDigits(int n) => n.toString().padLeft(2, '0');
-    String minutes = strDigits(myDuration.inMinutes.remainder(60));
     Widget cancelButton = TextButton(
       child: Text(
         "Cancelar",
@@ -338,7 +339,85 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
       },
     );
   }
+
+  void _analytics() {
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancelar",
+        style: TextStyle(color: colorData900(indexOf)),
+      ),
+      onPressed: () {
+        for (int i = 0; i < 2; i++) {
+          Navigator.of(context).pop();
+        }
+      },
+    );
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text(
+        "Confirmar",
+        style: TextStyle(color: colorData900(indexOf)),
+      ),
+      onPressed: () {
+        for (int i = 0; i < 2; i++) {
+          Navigator.of(context).pop();
+        }
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: colorData50(indexOf),
+      title: Text(
+        "Estatísticas",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: colorData900(indexOf)),
+      ),
+      content: SizedBox(
+        height: 150,
+        width: 150,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(
+            'Aguarde a próxima atualização.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: colorData900(indexOf)),
+          )
+          //   icon: Icons.leaderboard_outlined,
+          //   indexOf: indexOf,
+          //   onPressed: () {},
+          //   text: 'Teste',
+          // ),
+          // CustomIconButton(
+          //   icon: Icons.settings_outlined,
+          //   indexOf: indexOf,
+          //   onPressed: () {},
+          //   text: 'Teste 2',
+          // ),
+          // SettingsButtons(
+          //   indexOf: indexOf,
+          //   upPressed: () {
+          //     setState(() {
+          //       myDuration.inMinutes + 1;
+          //       minutes;
+          //     });
+          //   },
+          //   downPressed: () {},
+          //   text: 'Teste 3',
+          //   duration: minutes,
+          // )
+        ]),
+      ),
+      actions: [cancelButton, okButton],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
 
 // 986 - 78 até 372 - 618
-

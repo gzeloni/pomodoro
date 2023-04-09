@@ -2,7 +2,7 @@
     package="com.example.pomodoro">
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
    <application
-        android:label="Pomodoro da Mimi"
+        android:label="Pomodoro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
