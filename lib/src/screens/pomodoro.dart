@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -31,11 +33,12 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _isAndroidPermissionGranted();
     _requestPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
+    super.initState();
   }
 
   Future<void> _isAndroidPermissionGranted() async {
@@ -396,33 +399,14 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    switch (state) {
-      case AppLifecycleState.inactive:
-        _showNotificationCustomSound();
-        break;
-      case AppLifecycleState.paused:
-        _showNotificationCustomSound();
-        break;
-      case AppLifecycleState.resumed:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color.fromARGB(255, 126, 72, 181),
-            duration: Duration(seconds: 5),
-            content: Text(
-              "Bem-vindo de volta!",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          ),
-        );
-        break;
-      case AppLifecycleState.detached:
-        if (isStarted == true) {
-          resetTimer();
-        }
-        break;
+    if (state == AppLifecycleState.inactive && isStarted == true) {
+      _showProgressNotification();
+    } else if (state == AppLifecycleState.detached) {
+      if (isStarted == true) {
+        resetTimer();
+      }
     }
+    super.didChangeAppLifecycleState(state);
   }
 
   void startTimer() {
@@ -480,7 +464,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
         if (isStarted == false) {
           isStarted = !isStarted;
           startTimer();
-          _showNotificationCustomSound();
+          _showProgressNotification();
         }
       });
     } else if (cycle == 2 || cycle == 4 || cycle == 6) {
@@ -490,7 +474,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
         if (isStarted == false) {
           isStarted = !isStarted;
           startTimer();
-          _showNotificationCustomSound();
+          _showProgressNotification();
         }
       });
     } else if (cycle == 8) {
@@ -500,7 +484,7 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
         if (isStarted == false) {
           isStarted = !isStarted;
           startTimer();
-          _showNotificationCustomSound();
+          _showProgressNotification();
         }
       });
     } else if (cycle == 9) {
@@ -509,37 +493,70 @@ class _PomodoroState extends State<Pomodoro> with WidgetsBindingObserver {
         isStarted = false;
         switchTimer();
         resetTimer();
-        _showNotificationCustomSound();
+        _showNotification();
+        _stopForegroundService();
       });
     }
   }
 
-  Future<void> _showNotificationCustomSound() async {
+  Future<void> _stopForegroundService() async {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.stopForegroundService();
+  }
+
+  Future<void> _showProgressNotification() async {
+    id++;
+    final int progressId = id;
+    int maxProgress = myDuration.inSeconds.toInt();
+    if (modes[indexOf] == modes[0]) {}
+    for (int i = 0; i <= maxProgress; i++) {
+      await Future<void>.delayed(const Duration(seconds: 1), () async {
+        final AndroidNotificationDetails androidNotificationDetails =
+            AndroidNotificationDetails('Pomodoro', 'pomodoro app',
+                channelDescription: 'timer',
+                channelShowBadge: false,
+                importance: Importance.max,
+                priority: Priority.high,
+                onlyAlertOnce: true,
+                showProgress: false,
+                indeterminate: true,
+                maxProgress: maxProgress,
+                progress: i);
+        final NotificationDetails notificationDetails =
+            NotificationDetails(android: androidNotificationDetails);
+        await flutterLocalNotificationsPlugin.show(
+            progressId,
+            modes[indexOf] == modes[0]
+                ? 'Você está no ciclo de foco.'
+                : modes[indexOf] == modes[1]
+                    ? 'Hora da pausa!'
+                    : modes[indexOf] == modes[1]
+                        ? 'Você ganhou 15 minutos de pausa!'
+                        : '',
+            '$minutes:$seconds',
+            notificationDetails,
+            payload: 'item x');
+      });
+    }
+  }
+
+  Future<void> _showNotification() async {
     const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      'Pomodoro',
-      'pomodoro app',
-      channelDescription: 'timer',
-      sound: RawResourceAndroidNotificationSound('slow_spring_board'),
-    );
-    const DarwinNotificationDetails darwinNotificationDetails =
-        DarwinNotificationDetails(sound: 'slow_spring_board.aiff');
-    final LinuxNotificationDetails linuxPlatformChannelSpecifics =
-        LinuxNotificationDetails(
-      sound: AssetsLinuxSound('sound/slow_spring_board.mp3'),
-    );
-    final NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: darwinNotificationDetails,
-      macOS: darwinNotificationDetails,
-      linux: linuxPlatformChannelSpecifics,
-    );
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
-      id++,
-      'Pomodoro está em segundo plano',
-      '$minutes:$seconds',
-      notificationDetails,
-    );
+        id++,
+        'Pomodoro Finalizado!',
+        'Você terminou todos os ciclos do Pomodoro. Parabéns! :)',
+        notificationDetails,
+        payload: 'item x');
   }
 }
 
