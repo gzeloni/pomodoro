@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/src/utils/colors.dart';
+import 'package:pomodoro/src/utils/constants/colors.dart';
 
 Color colorData50(int indexOf) {
   return indexOf == 0

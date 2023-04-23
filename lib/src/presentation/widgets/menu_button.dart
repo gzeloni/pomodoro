@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/src/models/switch_colors.dart';
+import 'package:pomodoro/src/domain/models/switch_colors.dart';
 
 class CustomIconButton extends StatefulWidget {
   const CustomIconButton({
