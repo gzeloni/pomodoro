@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:android_power_manager/android_power_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,11 +15,9 @@ void init(BuildContext context) async {
       ].request();
       if (statuses[Permission.ignoreBatteryOptimizations]!.isGranted) {
         AndroidPowerManager.requestIgnoreBatteryOptimizations();
-      } else {
-        exit(0);
       }
     }
-  } catch (e) {
+  } on Exception catch (e) {
     debugPrint(e.toString());
   }
 }
