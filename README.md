@@ -8,7 +8,7 @@
 
 ## Screenshots da versão atual do app:
 
-![Image](images/modo_foco.png) ![Image](images/pausa_curta.png) ![Image](images/pausa_longa.png)
+| ![Image](images/modo_foco.png) | ![Image](images/pausa_curta.png) | ![Image](images/pausa_longa.png) |
 ![Image](images/notificacao_foco.png)
 ![Image](images/notificacao_pausa_curta.png)
 ![Image](images/notificacao_pausa_longa.png)
