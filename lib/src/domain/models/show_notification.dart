@@ -8,8 +8,8 @@ Future<void> showNotification(
   final date = DateTime.now().add(duration);
   final formatDate = DateFormat.Hm();
   const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails('your channel id', 'your channel name',
-          channelDescription: 'your channel description',
+      AndroidNotificationDetails('id_1', 'com.pomodoro.notification_channel',
+          channelDescription: 'com.pomodoro.focus_cycle',
           importance: Importance.max,
           priority: Priority.high,
           ticker: 'ticker');
@@ -24,7 +24,7 @@ Future<void> showNotification(
                 ? 'Hora da pausa!'
                 : modes[indexOf] == modes[1]
                     ? 'Você ganhou 15 minutos de pausa!'
-                    : '',
+                    : 'Pausa Longa',
         'Próximo ciclo: ${formatDate.format(date.toLocal())}',
         // 'Você terminou todos os ciclos do Pomodoro. Parabéns! :)',
         notificationDetails,

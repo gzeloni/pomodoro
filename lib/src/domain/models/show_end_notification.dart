@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
 import 'package:pomodoro/src/utils/constants/constants.dart';
 
 Future<void> showEndNotification(Duration duration) async {
-  final date = DateTime.now().add(duration);
-  final formatDate = DateFormat('hh:mm');
   const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails('your channel id', 'your channel name',
-          channelDescription: 'your channel description',
+      AndroidNotificationDetails('id_1', 'com.pomodoro.notification_channel',
+          channelDescription: 'com.pomodoro.end_cycle',
           importance: Importance.max,
           priority: Priority.high,
           ticker: 'ticker');

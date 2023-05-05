@@ -1,9 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pomodoro/src/domain/models/configure_did_receive_local_notifications_subject.dart';
 import 'package:pomodoro/src/domain/models/configure_select_notification_subject.dart';
 import 'package:pomodoro/src/domain/models/custom_show_dialog.dart';
@@ -12,7 +10,6 @@ import 'package:pomodoro/src/domain/models/is_android_permission_granted.dart';
 import 'package:pomodoro/src/domain/models/request_permission.dart';
 import 'package:pomodoro/src/domain/models/show_end_notification.dart';
 import 'package:pomodoro/src/domain/models/show_notification.dart';
-import 'package:pomodoro/src/presentation/widgets/menu_button.dart';
 import 'package:pomodoro/src/domain/models/switch_colors.dart';
 import 'package:pomodoro/src/presentation/widgets/buttons.dart';
 import 'package:pomodoro/src/utils/constants/constants.dart';

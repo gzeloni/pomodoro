@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/src/domain/models/analytics_dialog.dart';
 import 'package:pomodoro/src/domain/models/settings_dialog.dart';
 import 'package:pomodoro/src/domain/models/switch_colors.dart';
 import 'package:pomodoro/src/presentation/widgets/menu_button.dart';
@@ -28,14 +27,6 @@ void customShowDialog(BuildContext context, int indexOf) {
       height: 150,
       width: 150,
       child: Column(children: [
-        CustomIconButton(
-          icon: Icons.leaderboard_outlined,
-          indexOf: indexOf,
-          onPressed: () {
-            analytics(context, indexOf);
-          },
-          text: 'Estatísticas',
-        ),
         CustomIconButton(
           icon: Icons.settings_outlined,
           indexOf: indexOf,

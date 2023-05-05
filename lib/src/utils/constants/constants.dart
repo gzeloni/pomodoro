@@ -20,9 +20,9 @@ final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
 
 const MethodChannel platform =
-    MethodChannel('dexterx.dev/flutter_local_notifications_example');
+    MethodChannel('com.pomodoro.notification_platform');
 
-const String portName = 'notification_send_port';
+const String portName = 'com.pomodoro.notification_send_port';
 
 class ReceivedNotification {
   ReceivedNotification({
