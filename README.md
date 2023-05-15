@@ -4,6 +4,7 @@
   <img alt="Pomodoro" src="images/pomodoro.png" />
 </div>
 
+##### Designed by [AlexandrLo](https://www.figma.com/@alexandrlo)
 
 #### Pomodoro é uma ferramenta de gerenciamento de tempo que ajuda as pessoas a aumentarem sua produtividade por meio de um método de trabalho estruturado em períodos de tempo. O método pomodoro foi desenvolvido no final dos anos 1980 pelo italiano Francesco Cirillo e é baseado em uma abordagem simples e eficaz para manter a concentração e a motivação durante as tarefas.
 
